@@ -1,0 +1,41 @@
+// Learn more https://docs.expo.io/guides/customizing-metro
+const { getDefaultConfig } = require('expo/metro-config');
+const path = require('path');
+
+const config = getDefaultConfig(__dirname);
+
+// npm v7+ will install ../node_modules/react and ../node_modules/react-native because of peerDependencies.
+// To prevent the incompatible react-native between ./node_modules/react-native and ../node_modules/react-native,
+// excludes the one from the parent folder when bundling.
+config.resolver.blockList = [
+  ...Array.from(config.resolver.blockList ?? []),
+  new RegExp(path.resolve('..', 'node_modules', 'react')),
+  new RegExp(path.resolve('..', 'node_modules', 'react-native')),
+];
+
+config.resolver.nodeModulesPaths = [
+  path.resolve(__dirname, './node_modules'),
+  path.resolve(__dirname, '../node_modules'),
+];
+
+config.resolver.extraNodeModules = {
+  'digital-signer': './DigitalSigner',
+};
+
+config.watchFolders = [path.resolve(__dirname, './DigitalSigner')];
+
+// Enable new architecture support
+config.transformer.getTransformOptions = async () => ({
+  transform: {
+    experimentalImportSupport: false,
+    inlineRequires: true,
+  },
+});
+
+// Add resolver configuration for new architecture
+config.resolver.platforms = ['ios', 'android', 'native', 'web'];
+
+// Ensure proper module resolution for the new architecture
+config.resolver.resolverMainFields = ['react-native', 'browser', 'main'];
+
+module.exports = config;

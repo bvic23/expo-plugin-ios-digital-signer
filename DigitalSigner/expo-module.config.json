@@ -1,0 +1,9 @@
+{
+  "platforms": ["apple", "android", "web"],
+  "apple": {
+    "modules": ["DigitalSignerModule"]
+  },
+  "android": {
+    "modules": ["expo.modules.digitalsigner.DigitalSignerModule"]
+  }
+}
